@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-// import the users controller
+// Import user-related controllers
 import {
   loginUser,
   logoutUser,
@@ -11,25 +11,38 @@ import {
   getAssignmentById,
   getAssignmentByStatus,
 } from "@/controllers/user.controller";
+
+// Import middlewares for route protection
 import { openUserRoute, protectUserRoute } from "@/middlewares/user.middleware";
 
 const userRouter = Router();
 
-userRouter.post("/register", openUserRoute, registerUser);
-userRouter.post("/login", openUserRoute, loginUser);
+/**
+ * Public routes
+ * Routes that don't require user authentication
+ */
+userRouter.post("/register", openUserRoute, registerUser); // User registration
+userRouter.post("/login", openUserRoute, loginUser); // User login
 
-// protected routes
-userRouter.get("/upload", protectUserRoute, uploadAssignment);
-userRouter.get("/admins", protectUserRoute, getAllAdmins);
+/**
+ * Protected routes
+ * Routes that require user authentication
+ */
 
-// extra routes apart from the assignment
-userRouter.get("/assignment", protectUserRoute, getAllAssignments);
-userRouter.get("/assignment/:id", protectUserRoute, getAssignmentById);
+// Assignment-related routes
+userRouter.post("/upload", protectUserRoute, uploadAssignment); // Upload an assignment
+userRouter.get("/assignment", protectUserRoute, getAllAssignments); // Get all assignments
+userRouter.get("/assignment/:id", protectUserRoute, getAssignmentById); // Get a specific assignment by ID
 userRouter.get(
   "/assignments/:assignmentId/:status",
   protectUserRoute,
-  getAssignmentByStatus
+  getAssignmentByStatus // Get assignments by ID and status (e.g., submitted, graded)
 );
-userRouter.post("/logout", protectUserRoute, logoutUser);
+
+// Admin-related routes
+userRouter.get("/admins", protectUserRoute, getAllAdmins); // Get all admins
+
+// Logout route
+userRouter.post("/logout", protectUserRoute, logoutUser); // User logout
 
 export { userRouter };
