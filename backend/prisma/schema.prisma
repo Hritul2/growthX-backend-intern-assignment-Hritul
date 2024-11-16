@@ -16,13 +16,12 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-
-model Admin{
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String
-  password  String
-  name      String
-  department String       // not required for the scope of assignment
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Admin {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  email      String
+  password   String
+  name       String
+  department String // not required for the scope of assignment
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
