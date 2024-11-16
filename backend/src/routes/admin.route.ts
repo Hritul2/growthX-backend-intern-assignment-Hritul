@@ -6,7 +6,12 @@ import {
   acceptAssignment,
   rejectAssignment,
   addAssignment,
+  getAssignmentById,
+  getAllSubmissions,
+  getSubmissonById,
+  getSubmissonByStatus,
 } from "@/controllers/admin.controller";
+
 import {
   openAdminRoute,
   protectAdminRoute,
@@ -32,9 +37,16 @@ adminRouter.post(
   rejectAssignment
 );
 
-adminRouter.post("/create-assignment", protectAdminRoute, addAssignment);
-
 // extra routes apart from the assignment
 adminRouter.post("/logout", protectAdminRoute, logoutAdmin);
+adminRouter.post("/assignment", protectAdminRoute, addAssignment);
+adminRouter.get("/assignments/:id", protectAdminRoute, getAssignmentById);
+adminRouter.get("/submissons", protectAdminRoute, getAllSubmissions);
+adminRouter.get("/submissons/:id", protectAdminRoute, getSubmissonById);
+adminRouter.get(
+  "/submissons/:assignmentId/:status",
+  protectAdminRoute,
+  getSubmissonByStatus
+);
 
 export { adminRouter };

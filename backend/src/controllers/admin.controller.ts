@@ -333,3 +333,181 @@ export const addAssignment = asyncHandler(
       );
   }
 );
+
+export const getAssignmentById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { adminId } = req.body;
+    const assignmentId = String(req.params.id);
+    if (!adminId) {
+      throw new ApiError(400, "Please Login is required.");
+    }
+    if (!assignmentId) {
+      throw new ApiError(400, "Assignment ID is required.");
+    }
+    const assignment = await db.assignment.findFirst({
+      where: {
+        id: assignmentId,
+        adminId,
+      },
+    });
+    if (!assignment) {
+      throw new ApiError(404, "Assignment not found.");
+    }
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, assignment, "Assignment fetched successfully")
+      );
+  }
+);
+
+export const getAllSubmissions = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { adminId } = req.body;
+
+    // Validate adminId
+    if (!adminId) {
+      throw new ApiError(400, "Admin ID is required.");
+    }
+
+    // Fetch submissions with assignment and user details
+    const submissions = await db.assignmentSubmission.findMany({
+      where: {
+        assignment: {
+          adminId,
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        submittedAt: true,
+        feedback: true,
+        submitText: true,
+        assignment: {
+          select: {
+            id: true,
+            task: true,
+            description: true,
+            dueDate: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    // Return the submissions
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, submissions, "Submissions fetched successfully")
+      );
+  }
+);
+
+export const getSubmissonById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { adminId } = req.body;
+    const submissionId = String(req.params.id);
+    if (!adminId) {
+      throw new ApiError(400, "Please Login is required.");
+    }
+    if (!submissionId) {
+      throw new ApiError(400, "Submission ID is required.");
+    }
+    const submission = await db.assignmentSubmission.findFirst({
+      where: {
+        id: submissionId,
+        assignment: {
+          adminId,
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        submittedAt: true,
+        feedback: true,
+        submitText: true,
+        assignment: {
+          select: {
+            id: true,
+            task: true,
+            description: true,
+            dueDate: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+    if (!submission) {
+      throw new ApiError(404, "Submission not found.");
+    }
+    res
+      .status(200)
+      .json(
+        new ApiResponse(200, submission, "Submission fetched successfully")
+      );
+  }
+);
+
+export const getSubmissionByStatus = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { adminId } = req.body;
+    const assignmentId = String(req.params.assignmentId);
+    const status = String(req.params.status).toUpperCase(); // Normalize to match enum
+
+    // Validations
+    if (!adminId) {
+      throw new ApiError(400, "Admin login is required.");
+    }
+    if (!assignmentId) {
+      throw new ApiError(400, "Assignment ID is required.");
+    }
+    if (
+      !status ||
+      !["PENDING", "SUBMITTED", "ACCEPTED", "REJECTED"].includes(status)
+    ) {
+      throw new ApiError(400, "Invalid or missing status.");
+    }
+
+    // Fetch assignment submissions for the given assignmentId and status
+    const submissions = await db.assignmentSubmission.findMany({
+      where: {
+        assignmentId,
+        status: status as "PENDING" | "SUBMITTED" | "ACCEPTED" | "REJECTED",
+        assignment: {
+          adminId, // Ensure the admin requesting owns the assignment
+        },
+      },
+      include: {
+        user: {
+          select: { name: true, email: true }, // Include related user details
+        },
+        assignment: {
+          select: { task: true, description: true }, // Include related assignment details
+        },
+      },
+    });
+
+    // If no submissions found, return a helpful message
+    if (!submissions.length) {
+      throw new ApiError(404, "No submissions found for the given status.");
+    }
+
+    // Send response
+    res
+      .status(200)
+      .json(new ApiResponse(200, submissions, "Submissions found."));
+  }
+);
