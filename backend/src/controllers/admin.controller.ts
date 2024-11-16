@@ -461,7 +461,7 @@ export const getSubmissonById = asyncHandler(
   }
 );
 
-export const getSubmissionByStatus = asyncHandler(
+export const getSubmissonByStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const { adminId } = req.body;
     const assignmentId = String(req.params.assignmentId);

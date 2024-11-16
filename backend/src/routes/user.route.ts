@@ -9,6 +9,7 @@ import {
   uploadAssignment,
   getAllAssignments,
   getAssignmentById,
+  getAssignmentByStatus,
 } from "@/controllers/user.controller";
 import { openUserRoute, protectUserRoute } from "@/middlewares/user.middleware";
 
@@ -24,6 +25,11 @@ userRouter.get("/admins", protectUserRoute, getAllAdmins);
 // extra routes apart from the assignment
 userRouter.get("/assignment", protectUserRoute, getAllAssignments);
 userRouter.get("/assignment/:id", protectUserRoute, getAssignmentById);
+userRouter.get(
+  "/assignments/:assignmentId/:status",
+  protectUserRoute,
+  getAssignmentByStatus
+);
 userRouter.post("/logout", protectUserRoute, logoutUser);
 
 export { userRouter };

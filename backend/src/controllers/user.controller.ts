@@ -273,3 +273,49 @@ export const getAssignmentById = asyncHandler(
     res.status(200).json(new ApiResponse(200, assignment, "Assignment Found"));
   }
 );
+
+export const getAssignmentByStatus = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { userId } = req.body;
+    const assignmentId = String(req.params.assignmentId);
+    const status = String(req.params.status).toUpperCase();
+    if (!userId) {
+      throw new ApiError(401, "Admin not authenticated");
+    }
+    if (!assignmentId) {
+      throw new ApiError(400, "Assignment ID not provided");
+    }
+    if (
+      !status ||
+      !["PENDING", "SUBMITTED", "ACCEPTED", "REJECTED"].includes(status)
+    ) {
+      throw new ApiError(400, "Invalid or missing status.");
+    }
+
+    const submissions = await db.assignmentSubmission.findMany({
+      where: {
+        assignmentId,
+        status: status as "PENDING" | "SUBMITTED" | "ACCEPTED" | "REJECTED",
+        userId: userId,
+      },
+      include: {
+        assignment: {
+          select: {
+            task: true,
+            description: true,
+            dueDate: true,
+          },
+        },
+      },
+    });
+    // If no submissions found, return a helpful message
+    if (!submissions.length) {
+      throw new ApiError(404, "No submissions found for the given status.");
+    }
+
+    // Send response
+    res
+      .status(200)
+      .json(new ApiResponse(200, submissions, "Submissions found."));
+  }
+);
