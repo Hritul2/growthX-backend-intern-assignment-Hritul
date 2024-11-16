@@ -202,3 +202,74 @@ export const uploadAssignment = asyncHandler(
       .json(new ApiResponse(201, submitAssignment, "Assignment Submitted"));
   }
 );
+
+// extra routes apart from the assignment
+
+export const getAllAssignments = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.body.userId;
+    if (!userId) {
+      throw new ApiError(401, "User not authenticated");
+    }
+    const assignments = await db.assignment.findMany({
+      select: {
+        id: true,
+        task: true,
+        description: true,
+        submissions: {
+          where: {
+            userId: userId,
+          },
+          select: {
+            status: true,
+            submittedAt: true,
+            feedback: true,
+            submitText: true,
+          },
+        },
+      },
+    });
+    if (!assignments) {
+      throw new ApiError(404, "No assignments found");
+    }
+    res.status(200).json(new ApiResponse(200, assignments, "All Assignments"));
+  }
+);
+
+export const getAssignmentById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.body.userId;
+    if (!userId) {
+      throw new ApiError(401, "User not authenticated");
+    }
+    const assignmentId = req.params.id;
+    if (!assignmentId) {
+      throw new ApiError(400, "Assignment ID not provided");
+    }
+    const assignment = await db.assignment.findUnique({
+      where: {
+        id: assignmentId,
+      },
+      select: {
+        id: true,
+        task: true,
+        description: true,
+        submissions: {
+          where: {
+            userId: userId,
+          },
+          select: {
+            status: true,
+            submittedAt: true,
+            feedback: true,
+            submitText: true,
+          },
+        },
+      },
+    });
+    if (!assignment) {
+      throw new ApiError(404, "Assignment not found");
+    }
+    res.status(200).json(new ApiResponse(200, assignment, "Assignment Found"));
+  }
+);
