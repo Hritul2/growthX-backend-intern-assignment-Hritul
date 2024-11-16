@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Teacher{
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  password  String
+  name      String
+  department String       // not required for the scope of assignment
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
