@@ -5,6 +5,8 @@ import {
   loginUser,
   logoutUser,
   registerUser,
+  getAllAdmins,
+  uploadAssignment,
 } from "@/controllers/user.controller";
 import { openUserRoute, protectUserRoute } from "@/middlewares/user.middleware";
 
@@ -14,8 +16,8 @@ userRouter.post("/register", openUserRoute, registerUser);
 userRouter.post("/login", openUserRoute, loginUser);
 
 // protected routes
-userRouter.get("/upload", protectUserRoute);
-userRouter.get("/admins", protectUserRoute);
+userRouter.get("/upload", protectUserRoute, uploadAssignment);
+userRouter.get("/admins", protectUserRoute, getAllAdmins);
 
 // extra routes apart from the assignment
 userRouter.post("/logout", protectUserRoute, logoutUser);

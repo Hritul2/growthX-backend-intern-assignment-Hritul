@@ -8,27 +8,86 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String
-  password  String
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String                 @id @default(auto()) @map("_id") @db.ObjectId
+  email       String
+  password    String
+  name        String
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  submissions AssignmentSubmission[]
 }
 
 model Admin {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  email      String
-  password   String
-  name       String
-  department DEPARTMENT @default(HR) 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  email       String
+  password    String
+  name        String
+  department  DEPARTMENT   @default(HR)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  assignments Assignment[]
 }
 
-enum DEPARTMENT{
+enum DEPARTMENT {
   HR
   IT
   FINANCE
   MARKETING
+}
+
+// Assumption: Admins assignments are for every student
+model Assignment {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  task       String
+  description String?
+  dueDate     DateTime?
+
+  // Relationship with admin who created the assignment
+  adminId String @db.ObjectId
+  admin   Admin  @relation(fields: [adminId], references: [id])
+
+  // Relationship with submissions
+  submissions AssignmentSubmission[]
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([adminId])
+}
+
+model AssignmentSubmission {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Status can be: PENDING, SUBMITTED, ACCEPTED, REJECTED
+  status STATUS @default(PENDING)
+
+  // Submission details
+  submittedAt DateTime?
+  submitText  String?
+
+  // Feedback from admin
+  feedback String?
+
+  // Relationships
+  assignmentId String     @db.ObjectId
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([assignmentId])
+  @@index([status])
+}
+
+enum STATUS {
+  PENDING
+  SUBMITTED
+  ACCEPTED
+  REJECTED
 }

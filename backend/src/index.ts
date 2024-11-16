@@ -6,7 +6,7 @@ import cokkieParser from "cookie-parser";
 import { errorHandler } from "@/middlewares/error.middleware";
 import { userRouter } from "@/routes/user.route";
 import { adminRouter } from "@/routes/admin.route";
-import { asyncHandler } from "./asyncHandler";
+import { asyncHandler } from "@/utils/asyncHandler";
 
 //config
 dotenv.config();

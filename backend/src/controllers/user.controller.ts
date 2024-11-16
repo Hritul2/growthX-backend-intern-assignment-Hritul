@@ -2,10 +2,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
-import { asyncHandler } from "@/asyncHandler";
+import { asyncHandler } from "@/utils/asyncHandler";
 import { Request, Response } from "express";
 import Db from "@/utils/db";
-import { userLoginSchema, userRegisterSchema } from "@/utils/types/user.type";
+import {
+  userLoginSchema,
+  userRegisterSchema,
+  uploadAssignmentSchema,
+} from "@/utils/types/user.type";
 
 // Initialize DB instance and JWT constants
 const db = Db.getInstance();
@@ -119,6 +123,82 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
+  console.log("userID", req.body.userId);
   res.clearCookie("user-token");
   res.status(200).json(new ApiResponse(200, {}, "User Logged Out"));
 });
+
+export const getAllAdmins = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.body.userId;
+    if (!userId) {
+      throw new ApiError(401, "User not authenticated");
+    }
+    const admins = await db.admin.findMany({
+      select: {
+        name: true,
+        email: true,
+        department: true,
+        assignments: {
+          select: {
+            id: true,
+            task: true,
+            description: true,
+            submissions: {
+              where: {
+                userId: userId,
+              },
+              select: {
+                status: true,
+                submittedAt: true,
+                feedback: true,
+                submitText: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!admins) {
+      throw new ApiError(404, "No admins found");
+    }
+    res.status(200).json(new ApiResponse(200, admins, "All Admins"));
+  }
+);
+
+export const uploadAssignment = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { success, error, data } = uploadAssignmentSchema.safeParse(req.body);
+    if (!success || error) {
+      throw new ApiError(400, error?.message || "Invalid data provided");
+    }
+
+    const { userId, submitText, assignmentId } = data;
+
+    // Check if the assignment has already been submitted by the user
+    const existingSubmission = await db.assignmentSubmission.findFirst({
+      where: {
+        userId,
+        assignmentId,
+      },
+    });
+
+    if (existingSubmission) {
+      throw new ApiError(400, "Assignment already submitted.");
+    }
+
+    // Create the new assignment submission
+    const submitAssignment = await db.assignmentSubmission.create({
+      data: {
+        submittedAt: new Date(),
+        submitText,
+        assignmentId,
+        userId,
+      },
+    });
+
+    res
+      .status(201)
+      .json(new ApiResponse(201, submitAssignment, "Assignment Submitted"));
+  }
+);

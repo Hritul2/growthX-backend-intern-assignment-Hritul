@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ApiResponse } from "@/utils/ApiResponse";
 import { ApiError } from "@/utils/ApiError";
-import { asyncHandler } from "@/asyncHandler";
+import { asyncHandler } from "@/utils/asyncHandler";
 import { Request, Response } from "express";
 import Db from "@/utils/db";
 import {
@@ -113,6 +113,8 @@ export const loginAdmin = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const logoutAdmin = asyncHandler(async (req: Request, res: Response) => {
+  console.log("adminId", req.body.adminId);
+
   res.clearCookie("admin-token");
   res
     .status(200)

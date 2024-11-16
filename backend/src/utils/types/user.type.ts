@@ -14,3 +14,10 @@ export const userLoginSchema = z.object({
 export const userTokenSchema = z.object({
   userId: z.string(),
 });
+
+export const uploadAssignmentSchema = z.object({
+  userId: z.string(),
+  submitText: z.string(),
+  admin: z.string(),
+  assignmentId: z.string(),
+});
