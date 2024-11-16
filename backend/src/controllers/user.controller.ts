@@ -12,7 +12,7 @@ const db = Db.getInstance();
 const JWT_SECRET = String(process.env.USER_JWT_SECRET) || "secret";
 const JWT_TOKEN_EXPIRY = String(process.env.USER_JWT_TOKEN_EXPIRY) || "1d";
 
-// Register User Route
+// Register User Controller
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
     // Parse the request body using the userRegisterSchema

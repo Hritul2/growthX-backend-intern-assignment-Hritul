@@ -18,7 +18,6 @@ userRouter.get("/upload", protectUserRoute);
 userRouter.get("/admins", protectUserRoute);
 
 // extra routes apart from the assignment
-
 userRouter.post("/logout", protectUserRoute, logoutUser);
 
 export { userRouter };
