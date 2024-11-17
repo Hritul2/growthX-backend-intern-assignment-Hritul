@@ -1,9 +1,8 @@
-version: "3.8"
-
+# docker-compose.yml
 services:
   mongo:
     build:
-      context: ./
+      context: ./mongodb_replica
       args:
         MONGO_VERSION: 6
     environment:
@@ -14,6 +13,33 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data
+    restart: unless-stopped
+
+  backend-dev:
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend/dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../backend:/app
+      - /app/node_modules
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017/growthX
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  backend-prod:
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend/dockerfile.prod
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017/growthX
+    depends_on:
+      - mongo
     restart: unless-stopped
 
 volumes:
