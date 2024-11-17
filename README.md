@@ -36,8 +36,8 @@ The system uses MongoDB with Prisma ORM and includes the following models:
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/assignment-management.git
-cd assignment-management
+git clone https://github.com/Hritul2/growthX-backend-intern-assignment-Hritul.git
+cd growthX-backend-intern-assignment-Hritul
 ```
 
 2. Set up environment variables

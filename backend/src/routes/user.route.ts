@@ -40,7 +40,7 @@ const userRouter = Router();
  *                 example: password123
  *               name:
  *                 type: string
- *                 example: John Doe
+ *                 example: Hritul Srivastava
  *     responses:
  *       201:
  *         description: User created successfully
@@ -57,7 +57,7 @@ const userRouter = Router();
  *                   properties:
  *                     name:
  *                       type: string
- *                       example: John Doe
+ *                       example: Hritul Srivastava
  *                     email:
  *                       type: string
  *                       example: user@example.com
@@ -632,7 +632,7 @@ userRouter.get(
  *                       email:
  *                         type: string
  *                         description: Email address of the admin.
- *                         example: "john.doe@example.com"
+ *                         example: "hritul.srivastava@example.com"
  *                       department:
  *                         type: string
  *                         description: Department of the admin.

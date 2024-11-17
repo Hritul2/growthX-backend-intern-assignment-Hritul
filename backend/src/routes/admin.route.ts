@@ -37,7 +37,7 @@ const adminRouter = Router();
  *               name:
  *                 type: string
  *                 description: Full name of the admin.
- *                 example: John Doe
+ *                 example: Hritul Srivastava
  *               email:
  *                 type: string
  *                 description: Email address of the admin.
@@ -66,7 +66,7 @@ const adminRouter = Router();
  *                   properties:
  *                     name:
  *                       type: string
- *                       example: John Doe
+ *                       example: Hritul Srivastava
  *                     email:
  *                       type: string
  *                       example: admin@example.com
@@ -142,7 +142,7 @@ adminRouter.post("/register", openAdminRoute, registerAdmin); // Admin registrat
  *                   properties:
  *                     name:
  *                       type: string
- *                       example: John Doe
+ *                       example: Hritul Srivastava
  *                     email:
  *                       type: string
  *                       example: admin@example.com
@@ -264,7 +264,7 @@ adminRouter.post("/login", openAdminRoute, loginAdmin); // Admin login
  *                                   example: 101
  *                                 name:
  *                                   type: string
- *                                   example: "John Doe"
+ *                                   example: "Hritul Srivastava"
  *                                 email:
  *                                   type: string
  *                                   example: "johndoe@example.com"
@@ -835,10 +835,10 @@ adminRouter.post(
  *                             example: 123
  *                           name:
  *                             type: string
- *                             example: "John Doe"
+ *                             example: "Hritul Srivastava"
  *                           email:
  *                             type: string
- *                             example: "john.doe@example.com"
+ *                             example: "hritul.srivastava@example.com"
  *                 message:
  *                   type: string
  *                   example: "Submissions fetched successfully"
@@ -972,10 +972,10 @@ adminRouter.get("/submissons", protectAdminRoute, getAllSubmissions); // Get all
  *                           example: 123
  *                         name:
  *                           type: string
- *                           example: "John Doe"
+ *                           example: "Hritul Srivastava"
  *                         email:
  *                           type: string
- *                           example: "john.doe@example.com"
+ *                           example: "hritul.srivastava@example.com"
  *                 message:
  *                   type: string
  *                   example: "Submission fetched successfully"
@@ -1109,10 +1109,10 @@ adminRouter.get("/submissons/:id", protectAdminRoute, getSubmissonById); // Get 
  *                         properties:
  *                           name:
  *                             type: string
- *                             example: "John Doe"
+ *                             example: "Hritul Srivastava"
  *                           email:
  *                             type: string
- *                             example: "john.doe@example.com"
+ *                             example: "hritul.srivastava@example.com"
  *                 message:
  *                   type: string
  *                   example: "Submissions found."
