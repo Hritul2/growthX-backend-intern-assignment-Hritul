@@ -154,6 +154,7 @@ All inputs are validated using Zod schema validation ensuring:
 The project uses several npm scripts for development:
 
 ```bash
+npm i
 npm run db-generate    # Generate Prisma client
 npm run db-push       # Push database changes
 npm run dev          # Run development server
@@ -161,10 +162,3 @@ npm run build        # Build for production
 npm run start        # Run production server
 ```
 
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
